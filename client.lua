@@ -75,7 +75,7 @@ bindKey("E", "down", movePlayer)
 function setup()
     for i,v in ipairs(config.ziplines) do 
         local aCollision = createColSphere( v.a[1], v.a[2], v.a[3], config.ziplineColRadius )
-        local bCollision = createColSphere( v.b[1], v.b[2], v.b[3], config.ziplineColRadius )
+        local bCollision = createColSphere( v.b[1], v.b[2], v.b[3], config.ziplineColRadius )   
 
         ziplines[aCollision] = bCollision
         ziplines[bCollision] = aCollision
@@ -86,5 +86,21 @@ setup()
 addEventHandler("onClientElementColShapeHit", root, function(collision, matchingDimension)
     if matchingDimension then
         currentZiplineCol = collision
+    end
+end)
+
+-- Render lines
+addEventHandler("onClientRender", root, function()
+    local skip = false 
+
+    for i,v in pairs(ziplines) do
+        if skip then 
+
+            local startPos = Vector3(getElementPosition(i))
+            local endPos = Vector3(getElementPosition(v))
+            dxDrawLine3D(startPos.x, startPos.y, startPos.z + config.ziplineOffsetZ, endPos.x, endPos.y, endPos.z + config.ziplineOffsetZ, tocolor(0,0,0), 1)
+        end
+        
+        skip = not skip
     end
 end)
